@@ -45,5 +45,50 @@
     <Image Include="2023_Capstone_Project.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="c_monitor_1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="c_monitor_2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="c_monitor_3.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="eraser.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="exit.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="line.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="monitor_1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="monitor_2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="monitor_3.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="palette.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="pen.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="rect.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="round.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="save.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="size.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -140,6 +140,21 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="2023_Capstone_Project.ico" />
+    <Image Include="c_monitor_1.bmp" />
+    <Image Include="c_monitor_2.bmp" />
+    <Image Include="c_monitor_3.bmp" />
+    <Image Include="eraser.bmp" />
+    <Image Include="exit.bmp" />
+    <Image Include="line.bmp" />
+    <Image Include="monitor_1.bmp" />
+    <Image Include="monitor_2.bmp" />
+    <Image Include="monitor_3.bmp" />
+    <Image Include="palette.bmp" />
+    <Image Include="pen.bmp" />
+    <Image Include="rect.bmp" />
+    <Image Include="round.bmp" />
+    <Image Include="save.bmp" />
+    <Image Include="size.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
