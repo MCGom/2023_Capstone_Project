@@ -23,20 +23,33 @@
 #define IDB_BITMAP8                     138
 #define IDB_BITMAP9                     139
 #define IDB_BITMAP10                    140
+#define IDB_INFO                        140
 #define IDB_BITMAP11                    141
 #define IDB_BITMAP12                    142
 #define IDB_BITMAP13                    143
 #define IDB_BITMAP14                    144
 #define IDB_SIZE                        145
-#define IDB_BITMAP1                     146
 #define IDB_MONITOR_2                   146
-#define IDOK                            1001
+#define IDB_C_MONITOR_2                 148
+#define IDB_C_MONITOR_1                 149
+#define IDB_C_MONITOR_3                 150
+#define IDB_ELLI                        151
+#define IDB_ERASE                       152
+#define IDB_SAVE                        153
+#define IDB_EXIT                        154
+#define IDB_FREE                        155
+#define IDB_LINE                        156
+#define IDB_MONITOR_3                   157
+#define IDB_PALETTE                     158
+#define IDB_RECT                        159
+#define IDD_DIALOG1                     160
+#define IDD_INTRO                       160
 #define IDC_SIZE_LABEL                  1002
 #define IDC_SIZE_SLIDER                 1003
 #define ID_32771                        32771
-#define ID_                             32772
 #define ID_ALARM_OFF                    32773
 #define ID_ALARM_ON                     32774
+#define ID_INFO                         32775
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -44,8 +57,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        147
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

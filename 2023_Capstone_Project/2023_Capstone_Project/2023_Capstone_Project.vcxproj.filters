@@ -90,5 +90,11 @@
     <Image Include="size.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\..\..\201907010_김민철\11_24\INFO.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\..\..\201907010_김민철\11_24\size.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

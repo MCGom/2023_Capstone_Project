@@ -139,6 +139,8 @@
     <ResourceCompile Include="2023_Capstone_Project.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\201907010_김민철\11_24\INFO.bmp" />
+    <Image Include="..\..\..\201907010_김민철\11_24\size.bmp" />
     <Image Include="2023_Capstone_Project.ico" />
     <Image Include="c_monitor_1.bmp" />
     <Image Include="c_monitor_2.bmp" />
