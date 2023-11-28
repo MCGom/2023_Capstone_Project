@@ -380,8 +380,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_SYSMENU | WS_BORDER,
+       CW_USEDEFAULT, CW_USEDEFAULT, 570, 220, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -626,7 +626,7 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
                 int n_y;
                 n_x = LOWORD(lParam);
                 n_y = HIWORD(lParam);
-                BitBlt(hDrawDC, g_x - (g_line_size * 3), g_y - (g_line_size * 3), g_line_size * 6, g_line_size * 6, erase_image.GetDC(), g_x - (g_line_size * 3), g_y - (g_line_size * 3), SRCCOPY);
+                BitBlt(hDrawDC, g_x - 25, g_y - 25, 50, 50, erase_image.GetDC(), g_x - 25, g_y - 25, SRCCOPY);
                 erase_image.ReleaseDC();
                 g_x = n_x;
                 g_y = n_y;
@@ -991,6 +991,101 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdc, LPRECT lpRect, LPARAM 
 
 };
 
+//펜 굵기 설정 다이얼로그에 관한 코드
+INT_PTR CALLBACK LINE_SIZE(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+    {
+        hSlider = GetDlgItem(hDlg, IDC_SIZE_SLIDER);
+        if (hSlider == NULL)
+        {
+            return (INT_PTR)true;
+        }
+        SendMessage(hSlider, TBM_SETRANGE, TRUE, MAKELPARAM(0, 100));
+        SendMessage(hSlider, TBM_SETPOS, TRUE, g_line_size);
+        SetDlgItemInt(hDlg, IDC_SIZE_LABEL, g_line_size, TRUE);
+        return (INT_PTR)TRUE;
+    }
+    case WM_HSCROLL:
+    {
+        pos = SendDlgItemMessageW(hDlg, IDC_SIZE_SLIDER, TBM_GETPOS, 0, 0);
+        SetDlgItemInt(hDlg, IDC_SIZE_LABEL, pos, TRUE);
+    }
+    break;
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDCANCEL)
+        {
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        else if (LOWORD(wParam) == IDOK)
+        {
+            g_line_size = pos;
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+
+//색상 변경 다이얼로그에 관한 코드
+INT_PTR CALLBACK COLORDLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+    {
+        memset(&cc, 0, sizeof(CHOOSECOLOR));
+        cc.lStructSize = sizeof(CHOOSECOLOR);
+        cc.hwndOwner = hDlg;
+        cc.lpCustColors = crTemp;
+        cc.Flags = 0;
+        //색상 변경시 선 색을 변경
+        if (ChooseColorW(&cc) == TRUE) {
+            g_line_color = cc.rgbResult;
+            if (4 == g_line_kind)
+            {
+                g_line_kind = 0;
+            }
+            EndDialog(hDlg, LOWORD(wParam));
+        }
+        else
+        {
+            EndDialog(hDlg, LOWORD(wParam));
+
+        }
+        return (INT_PTR)TRUE;
+    }
+
+    case WM_COMMAND:
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+INT_PTR CALLBACK INFODLG(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
+    case WM_CLOSE:
+        EndDialog(hDlg, 0);
+        return (INT_PTR)TRUE;
+
+    }
+    return (INT_PTR)FALSE;
+}
+
+
 //모니터 캡쳐 버튼을 눌렀을 때 실행
 //idx를 통해 넘어온 정수값으로 모니터 구분
 void screen_change(int idx) {
@@ -1031,6 +1126,44 @@ void screen_change(int idx) {
     //지우개용 이미지 로드
     erase_image.Load(L"tmp.jpeg");
 };
+
+
+//필기한 이미지 저장
+void screen_save(HWND hWnd)
+{
+    HDC c_Hdc = GetDC(hWnd);
+    CImage image_save;
+    RECT hWnd_Rect;
+    GetClientRect(hWnd, &hWnd_Rect);
+
+    time_t  t;
+    time(&t);
+    struct tm now;
+    localtime_s(&now, &t);
+
+    char buffer[80];
+    strftime(buffer, 80, "%Y_%m_%d %H_%M_%S.jpeg", &now);
+
+    int bufferSize = MultiByteToWideChar(CP_ACP, 0, buffer, -1, nullptr, 0);
+    wchar_t* saved_Date_Time = new wchar_t[bufferSize];
+    MultiByteToWideChar(CP_ACP, 0, buffer, -1, saved_Date_Time, bufferSize);
+    LPCTSTR saved_Date_Time_Name = saved_Date_Time;
+
+
+    int cx = hWnd_Rect.right - hWnd_Rect.left;
+    int cy = hWnd_Rect.bottom - hWnd_Rect.top;
+    int c_Color = ::GetDeviceCaps(c_Hdc, BITSPIXEL);
+    image_save.Create(cx, cy, c_Color, 0);
+    ::BitBlt(image_save.GetDC(), 0, 0, cx, cy, c_Hdc, 0, 0, SRCCOPY);
+    image_save.Save(saved_Date_Time_Name, Gdiplus::ImageFormatJPEG);
+
+    ReleaseDC(NULL, c_Hdc);
+    image_save.ReleaseDC();
+
+};
+
+
+
 //시간마다 알림
 void timer_alarm(int first, int second)
 {
