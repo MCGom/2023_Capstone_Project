@@ -277,25 +277,70 @@ std:ifstream file_in(filename);
 //
 //  용도: 창 클래스를 등록합니다.
 //
+
+//메인 창 클래스 등록
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MY2023CAPSTONEPROJECT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_MY2023CAPSTONEPROJECT);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MY2023CAPSTONEPROJECT));
+    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_MY2023CAPSTONEPROJECT);
+    wcex.lpszClassName = szWindowClass;
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
+}
+
+//캡쳐 화면을 보여주기 위한 창의 클래스 등록
+ATOM ChildRegisterClass(HINSTANCE hInstance)
+{
+    WNDCLASSEXW childwcex;
+
+    childwcex.cbSize = sizeof(WNDCLASSEX);
+
+    //더블 클릭 지원
+    childwcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    childwcex.lpfnWndProc = ChildWndProc;
+    childwcex.cbClsExtra = 0;
+    childwcex.cbWndExtra = 0;
+    childwcex.hInstance = hInstance;
+    childwcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MY2023CAPSTONEPROJECT));
+    childwcex.hCursor = LoadCursor(nullptr, IDC_CROSS);
+    childwcex.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+    childwcex.lpszMenuName = NULL;
+    childwcex.lpszClassName = L"Capture";
+    childwcex.hIconSm = LoadIcon(childwcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+    return RegisterClassExW(&childwcex);
+}
+ATOM ButtonRegisterClass(HINSTANCE hInstance)
+{
+    WNDCLASSEXW childwcex;
+
+    childwcex.cbSize = sizeof(WNDCLASSEX);
+
+    childwcex.style = CS_HREDRAW | CS_VREDRAW;
+    childwcex.lpfnWndProc = ButtonProc;
+    childwcex.cbClsExtra = 0;
+    childwcex.cbWndExtra = 0;
+    childwcex.hInstance = hInstance;
+    childwcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MY2023CAPSTONEPROJECT));
+    childwcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    childwcex.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+    childwcex.lpszMenuName = NULL;
+    childwcex.lpszClassName = L"Buttons";
+    childwcex.hIconSm = LoadIcon(childwcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+    return RegisterClassExW(&childwcex);
 }
 
 //알람 창 클래스 등록
@@ -444,14 +489,407 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
-    case WM_PAINT:
+    case WM_CREATE:
+    {
+        //모니터 구분을 위한 정수
+        int i = 0;
+        g_hWnd = hWnd;
+
+        //모니터의 갯수만큼 MobitorEnumProc을 반복하여 모니터 정보를 얻음
+        EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, NULL);
+        //모니터 갯수만큼 반복
+        for (i = 0; i < g_monitor_count; i++)
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            EndPaint(hWnd, &ps);
+            //모니터 캡쳐를 위한 버튼 생성
+            g_button[i] = CreateWindowEx(0, L"BUTTON", L"", WS_CHILD | BS_DEFPUSHBUTTON | BS_BITMAP, ((i * 160) + 15), 10, 160, 60, hWnd, (HMENU)(0x1001 + i), hInst, NULL);
+            g_button_bitmap[i] = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(monitor_button_imgs[i]));
+            SendMessage(g_button[i], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)g_button_bitmap[i]);
+            ShowWindow(g_button[i], SW_SHOW);
+        }
+        //모니터 갯수만큼 반복
+        for (i = 0; i < g_monitor_count; i++)
+        {
+            //모니터 캡쳐 화면을 표시할 모니터 선택 버튼 생성
+            c_button[i] = CreateWindowEx(0, L"BUTTON", L"", WS_CHILD | BS_DEFPUSHBUTTON | BS_BITMAP, ((i * 160) + 15), 85, 160, 60, hWnd, (HMENU)(0x1011 + i), hInst, NULL);
+            c_button_bitmap[i] = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(c_monitor_button_imgs[i]));
+            SendMessage(c_button[i], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)c_button_bitmap[i]);
+            ShowWindow(c_button[i], SW_SHOW);
+        }
+        //모니터의 해상도를 얻음
+        int width = GetSystemMetrics(SM_CXSCREEN);
+        int height = GetSystemMetrics(SM_CYSCREEN);
+        ChildRegisterClass(g_inst);
+        ButtonRegisterClass(b_inst);
+
+        //캡쳐 화면 출력을 위한 창 생성
+        captured_Wnd = CreateWindowEx(0, L"Capture", L"Capture", WS_POPUP, g_mi[0].rcMonitor.left, g_mi[0].rcMonitor.top, g_mi[0].rcMonitor.right, g_mi[0].rcMonitor.bottom, NULL, NULL, g_inst, NULL);
+        //캡처 화면 버튼을 위한 창 생성
+        button_Wnd = CreateWindowEx(WS_EX_TOPMOST, L"Buttons", L"Buttons", WS_POPUP, g_mi[0].rcMonitor.left + 10, g_mi[0].rcMonitor.top + 1000, g_mi[0].rcMonitor.left + 365, g_mi[0].rcMonitor.top + 40, NULL, NULL, b_inst, NULL);
+
+
+        //캡쳐를 위한 설정
+        hMemDC = CreateCompatibleDC(GetDC(captured_Wnd));
+        hCapDC = GetDC(captured_Wnd);
+
+
+    }
+    break;
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+
+        HDC hdc = BeginPaint(hWnd, &ps);
+        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+    case WM_DESTROY:
+        //캡쳐에 사용한 HDC 정리
+        DeleteDC(hMemDC);
+        DeleteDC(hCapDC);
+        //알람 스레드에 메인 윈도우가 종료되었다고 알림
+        is_Exit = 1;
+
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
+}
+LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
+
+        break;
+    case WM_CREATE:
+    {
+        //그리기를 위한 설정
+
+        GetClientRect(hWnd, &hCapWnd_Rect);
+
+        c_x = hCapWnd_Rect.right - hCapWnd_Rect.left;
+        c_y = hCapWnd_Rect.bottom - hCapWnd_Rect.top;
+
+        hDrawDC = CreateCompatibleDC(GetDC(hWnd));
+        my_b = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+        os_b = (HBRUSH)SelectObject(hDrawDC, my_b);
+        hDrawBM = CreateCompatibleBitmap(GetDC(hWnd), c_x, c_y);
+        (HBITMAP)SelectObject(hDrawDC, hDrawBM);
+        FillRect(hDrawDC, &hCapWnd_Rect, CreateSolidBrush(0x00030502));
+        TransparentBlt(GetDC(hWnd), 0, 0, c_x, c_y, hDrawDC, 0, 0, c_x, c_y, 0x00030502);
+
+
+    }
+    break;
+    case WM_ACTIVATE:
+    {
+        //화면의 그림이 alt+tab시 지워지는 현상을 막기 위한 다시 그리기
+        InvalidateRect(hWnd, NULL, TRUE);
+    }
+    break;
+    case WM_LBUTTONDOWN:
+    {
+        //마우스를 눌린 상태로 변경
+        g_p = TRUE;
+        g_x = LOWORD(lParam);
+        g_y = HIWORD(lParam);
+        my_pen = CreatePen(PS_SOLID, g_line_size, g_line_color);
+        os_pen = (HPEN)SelectObject(hDrawDC, my_pen);
+
+    }
+    break;
+    case WM_MOUSEMOVE:
+    {
+        //마우스가 눌린 상태인지 확인
+        if (TRUE == g_p)
+        {
+            //자유 곡선 그리기
+            if (0 == g_line_kind) {
+                int n_x;
+                int n_y;
+                n_x = LOWORD(lParam);
+                n_y = HIWORD(lParam);
+                //자유 곡선을 그림
+                MoveToEx(hDrawDC, g_x, g_y, NULL);
+                LineTo(hDrawDC, n_x, n_y);
+                g_x = n_x;
+                g_y = n_y;
+            }
+            //지우개 구현
+            else if (4 == g_line_kind)
+            {
+                int n_x;
+                int n_y;
+                n_x = LOWORD(lParam);
+                n_y = HIWORD(lParam);
+                BitBlt(hDrawDC, g_x - (g_line_size * 3), g_y - (g_line_size * 3), g_line_size * 6, g_line_size * 6, erase_image.GetDC(), g_x - (g_line_size * 3), g_y - (g_line_size * 3), SRCCOPY);
+                erase_image.ReleaseDC();
+                g_x = n_x;
+                g_y = n_y;
+            }
+
+
+            TransparentBlt(GetDC(hWnd), 0, 0, c_x, c_y, hDrawDC, 0, 0, c_x, c_y, 0x00030502);
         }
         break;
+    }
+    case WM_LBUTTONUP:
+    {
+        int x, y;
+
+        x = LOWORD(lParam);
+        y = HIWORD(lParam);
+        //마우스가 눌린 상태가 아니었다면 break
+        if (FALSE == g_p)
+        {
+            break;
+        }
+        //마우스를 뗀 상태로 변경
+        g_p = FALSE;
+        //그리기 유형에 맞는 그리기 작업 실행
+        if (1 == g_line_kind)
+        {
+            //직선
+            MoveToEx(hDrawDC, g_x, g_y, NULL);
+            LineTo(hDrawDC, x, y);
+        }
+        if (2 == g_line_kind)
+        {
+            //사각형
+            Rectangle(hDrawDC, g_x, g_y, x, y);
+        }
+        if (3 == g_line_kind)
+        {
+            //타원형
+            Ellipse(hDrawDC, g_x, g_y, x, y);
+        }
+        TransparentBlt(GetDC(hWnd), 0, 0, c_x, c_y, hDrawDC, 0, 0, c_x, c_y, 0x00030502);
+        SelectObject(hDrawDC, os_pen);
+        DeleteObject(my_pen);
+    }
+    break;
+    case WM_LBUTTONDBLCLK:
+    {
+        if (0 == btn_Opened)
+        {
+            ShowWindow(button_Wnd, SW_SHOW);
+            btn_Opened = 1;
+        }
+        else
+        {
+
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+    }
+    break;
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+        TransparentBlt(GetDC(hWnd), 0, 0, c_x, c_y, hDrawDC, 0, 0, c_x, c_y, 0x00030502);
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
+    case WM_DESTROY:
+    {
+        //사용한 DC 및 오브젝트 해제
+        ReleaseDC(captured_Wnd, g_hdc);
+        SelectObject(hDrawDC, os_b);
+        DeleteObject(my_b);
+        DeleteDC(hDrawDC);
+        DeleteObject(hDrawBM);
+        //버튼 해제
+        DeleteObject(palette_Bitmap);
+        DeleteObject(free_Bitmap);
+        DeleteObject(erase_Bitmap);
+        DeleteObject(rect_Bitmap);
+        DeleteObject(elli_Bitmap);
+        DeleteObject(exit_Bitmap);
+        DeleteObject(save_Bitmap);
+        DeleteObject(size_Bitmap);
+        DeleteObject(line_Bitmap);
+        PostQuitMessage(0);
+    }
+    break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
+}
+LRESULT CALLBACK ButtonProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
+    case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        switch (wmId)
+        {
+            //색상 변경을 위한 다이얼로그 생성
+        case IDB_PALETTE:
+        {
+
+            //다이얼로그 생성
+            DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_COLORDLG), captured_Wnd, COLORDLG);
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+
+        }
+        break;
+        //그리기 종류 변경에 따라 실행
+        case IDB_FREE:
+        {
+            //자유 곡선
+            g_line_kind = 0;
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        case IDB_LINE:
+        {
+            //직선
+            g_line_kind = 1;
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        case IDB_RECT:
+        {
+            //사각형
+            g_line_kind = 2;
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        case IDB_ELLI:
+        {
+            //타원형
+            g_line_kind = 3;
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        case IDB_ERASE:
+        {
+            g_line_kind = 4;
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        //펜 굵기 변경을 위한 다이얼로그 생성
+        case IDB_SIZE:
+        {
+            DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_SIZE_SLIDER), captured_Wnd, LINE_SIZE);
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        //필기한 이미지를 저장
+        case IDB_SAVE:
+        {
+            screen_save(captured_Wnd);
+            ShowWindow(button_Wnd, SW_HIDE);
+            btn_Opened = 0;
+        }
+        break;
+        //캡쳐 화면 종료
+        case IDB_EXIT:
+        {
+            GetClientRect(captured_Wnd, &hCapWnd_Rect);
+            //기존 캡쳐 화면에서 그린 정보를 제거
+            FillRect(hDrawDC, &hCapWnd_Rect, CreateSolidBrush(0x00030502));
+            MSG msg;
+            while (PeekMessageW(&msg, captured_Wnd, 0, 0, PM_REMOVE)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            //캡쳐 화면을 숨기고 메인 화면을 보여줌
+            ShowWindow(captured_Wnd, SW_HIDE);
+            ShowWindow(button_Wnd, SW_HIDE);
+            ShowWindow(g_hWnd, SW_SHOW);
+            erase_image.Destroy();
+            remove("tmp.jpeg");
+            btn_Opened = 0;
+        }
+        break;
+        }
+
+    }
+    case WM_KEYDOWN:
+    {
+        switch (wParam)
+        {
+
+        }
+    }
+    break;
+    case WM_CREATE:
+    {
+
+        //색상 선택 팔레트 버튼
+        palette_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 0, 0, 30, 30, hWnd, (HMENU)IDB_PALETTE, GetModuleHandle(NULL), NULL);
+        palette_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_PALETTE));
+        SendMessage(palette_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)palette_Bitmap);
+
+        //굵기 조절 버튼
+        size_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 40, 0, 30, 30, hWnd, (HMENU)IDB_SIZE, GetModuleHandle(NULL), NULL);
+        size_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SIZE));
+        SendMessage(size_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)size_Bitmap);
+
+        //자유 곡선 버튼
+        free_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 80, 0, 30, 30, hWnd, (HMENU)IDB_FREE, GetModuleHandle(NULL), NULL);
+        free_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_FREE));
+        SendMessage(free_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)free_Bitmap);
+
+        //직선 버튼
+        line_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 120, 0, 30, 30, hWnd, (HMENU)IDB_LINE, GetModuleHandle(NULL), NULL);
+        line_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_LINE));
+        SendMessage(line_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)line_Bitmap);
+
+        //사각형 버튼
+        rect_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 160, 0, 30, 30, hWnd, (HMENU)IDB_RECT, GetModuleHandle(NULL), NULL);
+        rect_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_RECT));
+        SendMessage(rect_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)rect_Bitmap);
+
+        //원형 버튼
+        elli_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 200, 0, 30, 30, hWnd, (HMENU)IDB_ELLI, GetModuleHandle(NULL), NULL);
+        elli_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ELLI));
+        SendMessage(elli_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)elli_Bitmap);
+
+        //지우개 버튼
+        erase_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 240, 0, 30, 30, hWnd, (HMENU)IDB_ERASE, GetModuleHandle(NULL), NULL);
+        erase_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ERASE));
+        SendMessage(erase_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)erase_Bitmap);
+
+        //저장 버튼
+        save_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 280, 0, 30, 30, hWnd, (HMENU)IDB_SAVE, GetModuleHandle(NULL), NULL);
+        save_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_SAVE));
+        SendMessage(save_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)save_Bitmap);
+
+        //나가기 버튼
+        exit_Button = CreateWindowEx(WS_EX_TOPMOST, L"BUTTON", L"", WS_CHILD | WS_VISIBLE | BS_BITMAP | BS_DEFPUSHBUTTON, 320, 0, 30, 30, hWnd, (HMENU)IDB_EXIT, GetModuleHandle(NULL), NULL);
+        exit_Bitmap = LoadBitmapW(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_EXIT));
+        SendMessage(exit_Button, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)exit_Bitmap);
+    }
+    break;
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+
+        HDC hdc = BeginPaint(hWnd, &ps);
+
+
+        EndPaint(hWnd, &ps);
+    }
+    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
