@@ -20,4 +20,18 @@
 ![CapstoneMainWindow](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/8f2e8bcc-30df-4477-9216-5af75efd9960)<br/>
 * 설명서 구성
   <br/> 메인 윈도우의 도움말 기능을 통해 띄워지는 설명서 화면입니다.
-![CapstoneMainInfo](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/e1040fa5-6d01-4d40-900b-6554038d04e0)
+![CapstoneMainInfo](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/e1040fa5-6d01-4d40-900b-6554038d04e0)<br/>
+* 필기 화면 버튼 메뉴 구성
+  <br/> 필기를 시작했을 때 사용할 수 있는 메뉴들입니다.
+  <br/> 메뉴는 필기창 우하단에 생성되며, 더블 릭으로 숨기거나 보이게 할 수 있습니다.
+  <br/> 각 메뉴에 대한 설명은 위의 설명서 화면과 같습니다.
+  ![CapstoneMenubar](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/540acbbc-1fa5-4eb0-b6ce-18f3e6f1b7d2)<br/>
+* 각 알람 화면 구성
+  <br/> 특정 시간마다 모니터 우상단에 띄워지는 알람 화면입니다.
+  <br/> 위부터 쉬는 시간, 출석 체크 시간, 수업 시작 시간 알람 화면입니다.
+  ![CapstoneBreaktimeAlarm](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/93a8ce7c-71f5-487e-b17a-979fd4d92670)<br/>
+  ![CapstoneAttendtimeAlarm](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/5aebabec-8110-4e0c-ae98-88115f581c4b)<br/>
+  ![CapstoneStarttimeAlarm](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/f33c7bb3-7d07-46d0-a97d-a519cc8427f7)
+
+
+
