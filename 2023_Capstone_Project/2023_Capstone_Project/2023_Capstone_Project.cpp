@@ -238,7 +238,7 @@ std:ifstream file_in(filename);
     //알람창의 설정
     TimerRegisterClass(t_inst);
     //알람창 생성
-    timer_Wnd = CreateWindowEx(WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW, L"Alarm", L"Alarm", WS_POPUP, 1000, 30, 875, 100, NULL, NULL, t_inst, NULL);
+    timer_Wnd = CreateWindowEx(WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW, L"Alarm", L"Alarm", WS_POPUP, 1000 /* 이 부분을 수정하여 알람창의 x 좌표 수정 */, 30 /* 이 부분을 수정하여 알람창의 y 좌표 수정 */, 875, 100, NULL, NULL, t_inst, NULL);
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
