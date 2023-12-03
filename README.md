@@ -13,5 +13,10 @@
 # 프로젝트 구성
 
 * 메인 윈도우 구성
-  <br/> 프로그램을 실행시 나오는 창입니다. 'X번 모니터 화면' 버튼은 캡처하고 싶은 모니터를 선택하는 버튼이며, <br/>'X번 모니터에 필기 작성' 버튼은 캡처한 화면은 어떤 모니터에서 필기할지 선택하는 버튼입니다.
-![CapstoneMainWindow](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/8f2e8bcc-30df-4477-9216-5af75efd9960)
+  <br/> 프로그램을 실행시 나오는 창입니다. 'X번 모니터 화면' 버튼은 캡처하고 싶은 모니터를 선택하는 버튼이며,
+  <br/> 'X번 모니터에 필기 작성' 버튼은 캡처한 화면은 어떤 모니터에서 필기할지 선택하는 버튼입니다.
+  <br/> '알람 설정' 메뉴는 알람 기능을 활성화 혹은 비활성화 할 수 있습니다.
+  <br/> '도움말' 메뉴를 통해 프로그램의 다양한 기능을 설명하는 설명서를 열어볼 수 있습니다.
+![CapstoneMainWindow](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/8f2e8bcc-30df-4477-9216-5af75efd9960)<br/>
+
+![CapstoneMainInfo](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/e1040fa5-6d01-4d40-900b-6554038d04e0)
