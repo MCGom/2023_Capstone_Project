@@ -14,3 +14,4 @@
 
 * 메인 윈도우 구성
   <br/> 프로그램을 실행시 나오는 창입니다. 'X번 모니터 화면' 버튼은 캡처하고 싶은 모니터를 선택하는 버튼이며, <br/>'X번 모니터에 필기 작성' 버튼은 캡처한 화면은 어떤 모니터에서 필기할지 선택하는 버튼입니다.
+![CapstoneMainWindow](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/8f2e8bcc-30df-4477-9216-5af75efd9960)
