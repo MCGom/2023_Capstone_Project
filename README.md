@@ -18,4 +18,6 @@
   <br/> '알람 설정' 메뉴는 알람 기능을 활성화 혹은 비활성화 할 수 있습니다.
   <br/> '도움말' 메뉴를 통해 프로그램의 다양한 기능을 설명하는 설명서를 열어볼 수 있습니다.
 ![CapstoneMainWindow](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/8f2e8bcc-30df-4477-9216-5af75efd9960)<br/>
+* 설명서 구성
+  <br/> 메인 윈도우의 도움말 기능을 통해 띄워지는 설명서 화면입니다.
 ![CapstoneMainInfo](https://github.com/MCGom/2023_Capstone_Project/assets/100755492/e1040fa5-6d01-4d40-900b-6554038d04e0)
